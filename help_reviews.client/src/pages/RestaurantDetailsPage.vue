@@ -13,7 +13,7 @@
 import { useRoute, useRouter } from 'vue-router';
 import { restaurantsService } from '../services/RestaurantsService.js';
 import Pop from '../utils/Pop.js';
-import { computed, onMounted, watchEffect } from 'vue';
+import { computed, watchEffect } from 'vue';
 import { AppState } from '../AppState.js';
 import { logger } from '../utils/Logger.js';
 
@@ -28,6 +28,7 @@ export default {
       } catch (error) {
         let errorMessage = error.response.data
         if (errorMessage == "SOMETHING WENT WRONG 😉") {
+          logger.error(error)
           Pop.toast(errorMessage, 'error')
           router.push({ name: 'Home' })
         }
@@ -55,7 +56,6 @@ export default {
 .hero-row {
   height: 40vh;
   background-image: v-bind(restaurantImg);
-  background-position: center;
   background-size: cover;
 }
 
