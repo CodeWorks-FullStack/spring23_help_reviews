@@ -8,7 +8,7 @@
         <div class="d-flex justify-content-between mb-5 align-items-center">
           <h2>{{ restaurant.name }}</h2>
           <span class="fs-1">
-            0 <i class="mdi mdi-rodent"></i>
+            {{ restaurant.reportCount }} <i class="mdi mdi-rodent"></i>
           </span>
         </div>
         <p>

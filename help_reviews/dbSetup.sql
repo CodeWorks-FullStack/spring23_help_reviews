@@ -79,3 +79,10 @@ SELECT rep.*, acct.*
 FROM reports rep
     JOIN accounts acct ON rep.creatorId = acct.id
 WHERE restaurantId = 4;
+
+SELECT
+    rest.*,
+    COUNT(rep.id) AS reportCount
+FROM restaurants rest
+    LEFT JOIN reports rep ON rep.restaurantId = rest.id
+GROUP BY (rest.id);

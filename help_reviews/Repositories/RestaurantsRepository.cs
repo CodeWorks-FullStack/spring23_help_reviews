@@ -14,9 +14,12 @@ public class RestaurantsRepository
     string sql = @"
     SELECT
     rest.*,
+    COUNT(rep.id) AS reportCount,
     acct.*
     FROM restaurants rest
     JOIN accounts acct ON acct.id = rest.creatorId
+    LEFT JOIN reports rep ON rep.restaurantId = rest.id
+    GROUP BY (rest.id) 
     ;";
 
     List<Restaurant> restaurants = _db.Query<Restaurant, Profile, Restaurant>
@@ -34,11 +37,14 @@ public class RestaurantsRepository
     string sql = @"
     SELECT
     rest.*,
+    COUNT(rep.id) AS reportCount,
     acct.*
     FROM restaurants rest
     JOIN accounts acct ON acct.id = rest.creatorId
+    LEFT JOIN reports rep ON rep.restaurantId = rest.id
     WHERE rest.id = @restaurantId
-    ;";
+    GROUP BY (rest.id);"
+    ;
 
     Restaurant restaurant = _db.Query<Restaurant, Profile, Restaurant>
     (sql, (rest, acct) =>
