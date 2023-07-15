@@ -1,5 +1,7 @@
 namespace help_reviews.Controllers;
 
+
+
 [ApiController]
 [Route("api/[controller]")]
 public class RestaurantsController : ControllerBase
@@ -15,12 +17,19 @@ public class RestaurantsController : ControllerBase
     _reportsService = reportsService;
   }
 
+  // NOTE In this app, we consider a closed-down restaurant to be sensitive information. Every user (authenticated or not) should be able to see the data for a restaurant that is open. However, we don't want every user to see the data for a closed-down restaurant. Only the owner of a closed-down restaurant should be able to view that data.
+
   [HttpGet]
   public async Task<ActionResult<List<Restaurant>>> GetAllRestaurants()
   {
     try
     {
+      // Even though this route is not locked with an 'Authorize' we can still check to see if the user who made this request is logged in, and let our service handle this appropriately.
       Account userInfo = await _auth.GetUserInfoAsync<Account>(HttpContext);
+
+      // NOTE If the user is not logged in, here userInfo will be null so we add the '?' elvis operator so that our code does not break.
+      // userInfo?.id says DO NOT drill into my userInfo object if it is null. This is necessary for when I may need to check if the user logged in has certain access to data/can perform certain operations. Sometimes the person making this request has the rights to see/manipulate data, but not in ALL cases, so we must allow this property to be nullable.
+
       List<Restaurant> restaurants = _restaurantsService.GetAllRestaurants(userInfo?.Id);
       return Ok(restaurants);
     }
@@ -36,6 +45,7 @@ public class RestaurantsController : ControllerBase
     try
     {
       Account userInfo = await _auth.GetUserInfoAsync<Account>(HttpContext);
+
       Restaurant restaurant = _restaurantsService.GetOneRestaurant(restaurantId, userInfo?.Id);
       return Ok(restaurant);
     }

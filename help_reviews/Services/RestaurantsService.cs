@@ -13,7 +13,11 @@ public class RestaurantsService
   {
     List<Restaurant> restaurants = _repo.GetAllRestaurants();
 
-    List<Restaurant> filteredRestaurants = restaurants.FindAll(r => r.IsShutdown == false || r.CreatorId == userId);
+
+
+    // NOTE FindAll works very similar to a filter in javascript. On this line, we only keep the restaurant in our new list if it isn't closed down OR if the user making the request is the owner of the restaurant. If the user is not logged in, r.creatorId will never equal null, so we only send back open restaurants to the user.
+
+    List<Restaurant> filteredRestaurants = restaurants.FindAll(restaurant => restaurant.IsShutdown == false || restaurant.CreatorId == userId);
 
     return filteredRestaurants;
   }
@@ -26,6 +30,9 @@ public class RestaurantsService
     {
       throw new Exception($"THIS ID WAS INVALID: {restaurantId}");
     }
+
+    // NOTE additional check here to make sure we are still returning sensitive data to the appropriate users.
+    // NOTE **remember that the creator of a shutdown restaurant should still be able to retrieve and view it.
 
     if (restaurant.IsShutdown == true && userId != restaurant.CreatorId)
     {
